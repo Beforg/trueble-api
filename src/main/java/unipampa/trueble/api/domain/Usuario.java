@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import unipampa.trueble.api.enums.Role;
 
 @Entity
 @Table(name = "usuarios")
