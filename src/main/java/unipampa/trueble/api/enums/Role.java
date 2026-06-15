@@ -1,4 +1,4 @@
-package unipampa.trueble.api.domain;
+package unipampa.trueble.api.enums;
 
 public enum Role {
     ALUNO,

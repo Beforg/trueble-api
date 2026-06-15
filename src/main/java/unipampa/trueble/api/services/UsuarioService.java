@@ -3,7 +3,7 @@ package unipampa.trueble.api.services;
 import org.springframework.stereotype.Service;
 import unipampa.trueble.api.domain.Aluno;
 import unipampa.trueble.api.domain.Professor;
-import unipampa.trueble.api.domain.Role;
+import unipampa.trueble.api.enums.Role;
 import unipampa.trueble.api.domain.Usuario;
 import unipampa.trueble.api.dto.RegistroUsuarioDTO;
 import unipampa.trueble.api.repository.UsuarioRepository;
