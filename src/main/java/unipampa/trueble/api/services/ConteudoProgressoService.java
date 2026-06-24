@@ -19,7 +19,7 @@ public class ConteudoProgressoService {
     private final ConteudoProgressoRepository conteudoProgressoRepository;
     private final UsuarioRepository usuarioRepository;
 
-    private ConteudoProgressoService(ConteudoProgressoRepository conteudoProgressoRepository, UsuarioRepository usuarioRepository) {
+    public ConteudoProgressoService(ConteudoProgressoRepository conteudoProgressoRepository, UsuarioRepository usuarioRepository) {
         this.conteudoProgressoRepository = conteudoProgressoRepository;
         this.usuarioRepository = usuarioRepository;
     }
@@ -36,7 +36,7 @@ public class ConteudoProgressoService {
 
         // Procura se o aluno já começou este conteúdo
         ConteudoProgresso progresso = conteudoProgressoRepository
-                .findByAlunoIdAndConteudoId(alunoId, UUID.fromString(dto.conteudoId()))
+                .findByAlunoIdAndConteudoId(alunoId, Long.valueOf(dto.conteudoId()))
                 .orElse(new ConteudoProgresso());// Se não achar, cria um novo!
 
         if (progresso.getId() == null) {
@@ -44,13 +44,13 @@ public class ConteudoProgressoService {
             Aluno aluno = (Aluno) usuarioRepository.findById(alunoId)
                     .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
             progresso.setAluno(aluno);
-            progresso.setConteudoId(dto.conteudoId());
+            progresso.setConteudoId(Long.valueOf(dto.conteudoId()));
         }
 
         // Atualiza os dados
         progresso.setPaginasLidas(dto.paginasLidas());
         progresso.setTotalPaginas(dto.totalPaginas());
-        progresso.setStatus(StatusProgresso.valueOf(dto.status()));
+        progresso.setStatus(StatusProgresso.valueOf(dto.status().toUpperCase()));
         progresso.setAtualizadoEm(LocalDateTime.now());
 
         conteudoProgressoRepository.save(progresso);

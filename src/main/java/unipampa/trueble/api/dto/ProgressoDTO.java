@@ -4,9 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import unipampa.trueble.api.domain.ConteudoProgresso;
 
+import java.util.UUID;
+
 public record ProgressoDTO(
         @NotBlank
-        String conteudoId,
+        Long conteudoId,
         @NotNull
         Integer paginasLidas,
         @NotNull

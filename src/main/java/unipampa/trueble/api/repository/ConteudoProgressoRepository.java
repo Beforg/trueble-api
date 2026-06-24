@@ -10,6 +10,6 @@ import java.util.UUID;
 public interface ConteudoProgressoRepository extends JpaRepository<ConteudoProgresso, UUID> {
     List<ConteudoProgresso> findAllByAlunoId(UUID alunoId);
 
-    Optional<ConteudoProgresso> findByAlunoIdAndConteudoId(UUID alunoId, UUID conteudoId);
+    Optional<ConteudoProgresso> findByAlunoIdAndConteudoId(UUID alunoId, Long conteudoId);
 }
 

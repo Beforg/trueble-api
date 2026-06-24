@@ -1,7 +1,9 @@
 package unipampa.trueble.api.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import java.time.LocalDateTime;
@@ -11,6 +13,8 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "respostas_alunos")
+@AllArgsConstructor
+@NoArgsConstructor
 public class RespostaAluno {
 
     @Id

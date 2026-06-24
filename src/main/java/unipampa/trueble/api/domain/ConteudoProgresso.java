@@ -1,7 +1,9 @@
 package unipampa.trueble.api.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import unipampa.trueble.api.enums.StatusProgresso;
 
 import java.time.LocalDateTime;
@@ -10,6 +12,8 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "conteudo_progresso_aluno")
+@AllArgsConstructor
+@NoArgsConstructor
 public class ConteudoProgresso {
 
     @Id
@@ -20,9 +24,8 @@ public class ConteudoProgresso {
     @JoinColumn(name = "aluno_id", nullable = false)
     private Aluno aluno;
 
-    // ID do conteúdo que vem do teu Frontend (ex: 'conteudo-01')
     @Column(name = "conteudo_id", nullable = false)
-    private String conteudoId;
+    private Long conteudoId;
 
     @Column(name = "paginas_lidas")
     private Integer paginasLidas = 0;
