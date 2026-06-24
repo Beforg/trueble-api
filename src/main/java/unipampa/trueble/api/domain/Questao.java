@@ -1,7 +1,9 @@
 package unipampa.trueble.api.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import unipampa.trueble.api.enums.TipoQuestao;
@@ -13,6 +15,8 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "questoes")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Questao {
 
     @Id
