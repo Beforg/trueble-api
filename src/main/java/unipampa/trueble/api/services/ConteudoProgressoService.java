@@ -1,6 +1,8 @@
 package unipampa.trueble.api.services;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import unipampa.trueble.api.domain.Aluno;
@@ -33,10 +35,10 @@ public class ConteudoProgressoService {
     @Transactional
     public ProgressoDTO atualizarProgresso(Jwt jwt, ProgressoDTO dto) {
         UUID alunoId = UUID.fromString(jwt.getSubject());
-
+        System.out.println(alunoId);
         // Procura se o aluno já começou este conteúdo
         ConteudoProgresso progresso = conteudoProgressoRepository
-                .findByAlunoIdAndConteudoId(alunoId, Long.valueOf(dto.conteudoId()))
+                .findByAlunoIdAndConteudoId(alunoId, dto.conteudoId())
                 .orElse(new ConteudoProgresso());// Se não achar, cria um novo!
 
         if (progresso.getId() == null) {
@@ -44,7 +46,7 @@ public class ConteudoProgressoService {
             Aluno aluno = (Aluno) usuarioRepository.findById(alunoId)
                     .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
             progresso.setAluno(aluno);
-            progresso.setConteudoId(Long.valueOf(dto.conteudoId()));
+            progresso.setConteudoId(dto.conteudoId());
         }
 
         // Atualiza os dados
@@ -53,7 +55,24 @@ public class ConteudoProgressoService {
         progresso.setStatus(StatusProgresso.valueOf(dto.status().toUpperCase()));
         progresso.setAtualizadoEm(LocalDateTime.now());
 
-        conteudoProgressoRepository.save(progresso);
-        return new ProgressoDTO(progresso);
+        try {
+            conteudoProgressoRepository.saveAndFlush(progresso);
+            return new ProgressoDTO(progresso);
+        } catch (DataIntegrityViolationException ex) {
+            ConteudoProgresso updated = atualizarProgressoOnDuplicate(alunoId, dto);
+            return new ProgressoDTO(updated);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public ConteudoProgresso atualizarProgressoOnDuplicate(UUID alunoId, ProgressoDTO dto) {
+        ConteudoProgresso existing = conteudoProgressoRepository
+                .findByAlunoIdAndConteudoId(alunoId, dto.conteudoId())
+                .orElseThrow(() -> new RuntimeException("Registro não encontrado após conflito de concorrência"));
+        existing.setPaginasLidas(dto.paginasLidas());
+        existing.setTotalPaginas(dto.totalPaginas());
+        existing.setStatus(StatusProgresso.valueOf(dto.status().toUpperCase()));
+        existing.setAtualizadoEm(LocalDateTime.now());
+        return conteudoProgressoRepository.save(existing);
     }
 }
