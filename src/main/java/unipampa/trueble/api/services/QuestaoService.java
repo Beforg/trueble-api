@@ -25,8 +25,8 @@ public class QuestaoService {
     }
 
     public QuestaoResponseDTO criarQuestao(Jwt jwt, QuestaoRequestDTO dto) {
-        UUID professorId = UUID.fromString(jwt.getSubject()); 
-
+        UUID professorId = UUID.fromString(jwt.getSubject());
+        System.out.println(UUID.fromString(jwt.getSubject()));
         Professor professor = (Professor) usuarioRepository.findById(professorId)
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
 
