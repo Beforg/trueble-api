@@ -21,7 +21,7 @@ public record QuestaoResponseDTO(
                 questao.getTitulo(),
                 questao.getDescricao(),
                 questao.getTipoQuestao(),
-                questao.getCategoria(),
+                questao.getCategoria().getNome(),
                 questao.getConteudo(),
                 questao.getPublico(),
                 questao.getProfessor().getNome()
