@@ -36,7 +36,9 @@ public class Questao {
     @Column(name = "tipo_questao")
     private TipoQuestao tipoQuestao;
 
-    private String categoria;
+    @ManyToOne
+    @JoinColumn(name = "categoria_id", nullable = false)
+    private Categoria categoria;
 
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> conteudo;
