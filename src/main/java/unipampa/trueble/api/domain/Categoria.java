@@ -23,4 +23,8 @@ public class Categoria {
     public Categoria(CategoriaRequestDTO dto) {
         this.nome = dto.nome();
     }
+
+    public void atualizar_categoria(CategoriaRequestDTO dto) {
+        this.nome = dto.nome();
+    }
 }
