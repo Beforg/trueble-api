@@ -6,6 +6,9 @@ import unipampa.trueble.api.dto.CategoriaRequestDTO;
 import unipampa.trueble.api.dto.CategoriaResponseDTO;
 import unipampa.trueble.api.repository.CategoriaRepository;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 public class CategoriaService {
     private final CategoriaRepository categoriaRepository;
@@ -16,6 +19,18 @@ public class CategoriaService {
     public CategoriaResponseDTO criarCategoria(CategoriaRequestDTO dto) {
         Categoria novaCategoria = new Categoria(dto);
         categoriaRepository.save(novaCategoria);
-        return new CategoriaResponseDTO(novaCategoria.getId(), novaCategoria.getNome());
+        return new CategoriaResponseDTO(novaCategoria);
+    }
+
+    public List<CategoriaResponseDTO> listarCategorias() {
+        return categoriaRepository.findAll().stream().map(CategoriaResponseDTO::new).toList();
+    }
+
+    public CategoriaResponseDTO atualizarCategoria(String id, CategoriaRequestDTO dto) {
+        Categoria categoria = categoriaRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+        categoria.atualizar_categoria(dto);
+        categoriaRepository.save(categoria);
+        return new CategoriaResponseDTO(categoria);
     }
 }
