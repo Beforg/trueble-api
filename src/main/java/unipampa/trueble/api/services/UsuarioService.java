@@ -1,12 +1,16 @@
 package unipampa.trueble.api.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import unipampa.trueble.api.domain.Aluno;
 import unipampa.trueble.api.domain.Professor;
+import unipampa.trueble.api.dto.UsuarioResponseDTO;
 import unipampa.trueble.api.enums.Role;
 import unipampa.trueble.api.domain.Usuario;
 import unipampa.trueble.api.dto.RegistroUsuarioDTO;
 import unipampa.trueble.api.repository.UsuarioRepository;
+
+import java.util.UUID;
 
 @Service
 public class UsuarioService {
@@ -17,6 +21,7 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
+    @Transactional
     public Usuario registrarNovoUsuario(RegistroUsuarioDTO dto) {
         if (dto.role() == Role.PROFESSOR) {
             Professor professor = new Professor();
@@ -33,5 +38,13 @@ public class UsuarioService {
             aluno.setRole(Role.ALUNO);
             return usuarioRepository.save(aluno);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public UsuarioResponseDTO obterPerfilAutenticado(UUID usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+
+        return new UsuarioResponseDTO(usuario);
     }
 }
