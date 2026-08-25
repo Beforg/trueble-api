@@ -72,6 +72,7 @@ public class ListaDeQuestoesService {
         return new ListaDeQuestoesResponseDTO(lista, totalQuestoes);
     }
 
+    @Transactional(readOnly = true)
     public List<ListaDeQuestoesResponseDTO> listarMinhasListas(Jwt jwt) {
         UUID professorId = UUID.fromString(jwt.getSubject());
 

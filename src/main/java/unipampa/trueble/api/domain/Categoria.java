@@ -24,7 +24,7 @@ public class Categoria {
         this.nome = dto.nome();
     }
 
-    public void atualizar_categoria(CategoriaRequestDTO dto) {
+    public void atualizarCategoria(CategoriaRequestDTO dto) {
         this.nome = dto.nome();
     }
 }
