@@ -29,4 +29,5 @@ public abstract class Usuario {
     @Column(name = "data_cadastro", updatable = false)
     private LocalDateTime dataCadastro;
 
+    public abstract String getNome();
 }
