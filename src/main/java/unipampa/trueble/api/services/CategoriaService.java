@@ -1,6 +1,7 @@
 package unipampa.trueble.api.services;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import unipampa.trueble.api.domain.Categoria;
 import unipampa.trueble.api.dto.CategoriaRequestDTO;
 import unipampa.trueble.api.dto.CategoriaResponseDTO;
@@ -16,6 +17,8 @@ public class CategoriaService {
     public CategoriaService(CategoriaRepository categoriaRepository) {
         this.categoriaRepository = categoriaRepository;
     }
+
+    @Transactional
     public CategoriaResponseDTO criarCategoria(CategoriaRequestDTO dto) {
         Categoria novaCategoria = new Categoria(dto);
         categoriaRepository.save(novaCategoria);
@@ -29,7 +32,7 @@ public class CategoriaService {
     public CategoriaResponseDTO atualizarCategoria(String id, CategoriaRequestDTO dto) {
         Categoria categoria = categoriaRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
-        categoria.atualizar_categoria(dto);
+        categoria.atualizarCategoria(dto);
         categoriaRepository.save(categoria);
         return new CategoriaResponseDTO(categoria);
     }

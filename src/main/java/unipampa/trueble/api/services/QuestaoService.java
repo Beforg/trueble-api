@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import unipampa.trueble.api.domain.Categoria;
 import unipampa.trueble.api.domain.Professor;
 import unipampa.trueble.api.domain.Questao;
@@ -34,6 +35,7 @@ public class QuestaoService {
         this.categoriaRepository = categoriaRepository;
     }
 
+    @Transactional
     public QuestaoResponseDTO criarQuestao(Jwt jwt, QuestaoRequestDTO dto) {
         UUID professorId = UUID.fromString(jwt.getSubject());
         System.out.println(UUID.fromString(jwt.getSubject()));
@@ -55,7 +57,7 @@ public class QuestaoService {
         questao = questaoRepository.save(questao);
         return new QuestaoResponseDTO(questao);
     }
-
+    @Transactional(readOnly = true)
     public List<QuestaoResponseDTO> listarMinhasQuestoes(Jwt jwt) {
         UUID professorId = UUID.fromString(jwt.getSubject());
         return questaoRepository.findAllByProfessorIdAndAtivoTrue(professorId)
@@ -64,6 +66,7 @@ public class QuestaoService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<QuestaoResponseDTO> listarQuestoesPublicas() {
         return questaoRepository.findAllByPublicoTrueAndAtivoTrue()
                 .stream()
@@ -71,6 +74,7 @@ public class QuestaoService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public Page<QuestaoResponseDTO> listarBancoDeQuestoes(
             Jwt jwt,
             String titulo,
