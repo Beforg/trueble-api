@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public record TurmaResponseDTO(
         UUID id ,
+        String nomeTurma,
         String nomeProfessor,
         String descricao,
         LocalDate dataInicio,
@@ -16,6 +17,7 @@ public record TurmaResponseDTO(
     public TurmaResponseDTO (Turma turma) {
         this(
                 turma.getId(),
+                turma.getNome(),
                 turma.getProfessor().getNome(),
                 turma.getDescricao(),
                 turma.getDataInicio(),
