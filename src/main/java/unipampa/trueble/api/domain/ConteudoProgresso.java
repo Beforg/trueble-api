@@ -11,7 +11,10 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "conteudo_progresso_aluno")
+@Table(
+        name = "conteudo_progresso_aluno",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"aluno_id", "conteudo_id"})
+)
 @AllArgsConstructor
 @NoArgsConstructor
 public class ConteudoProgresso {
