@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface ListaDeQuestoesRepository extends JpaRepository<ListaDeQuestoes, UUID> {
     List<ListaDeQuestoes> findAllByProfessorIdAndAtivoTrue(UUID professorId);
+    List<ListaDeQuestoes> findAllByTurmaIdAndAtivoTrue(UUID turmaId);
 }

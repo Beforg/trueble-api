@@ -1,5 +1,9 @@
 package unipampa.trueble.api.dto;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  *
@@ -10,5 +14,9 @@ import java.util.List;
 public record ListaDeQuestoesRequestDTO(
         String titulo,
         String descricao,
-        List<ListaQuestaoRequestDTO> questoes
+        @NotNull
+        UUID turmaId,
+        List<ListaQuestaoRequestDTO> questoes,
+        LocalDate dataInicio,
+        LocalDate dataFim
 ) {}

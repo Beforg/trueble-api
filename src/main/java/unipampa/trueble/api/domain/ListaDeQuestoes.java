@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -23,9 +24,17 @@ public class ListaDeQuestoes {
     @JoinColumn(name = "professor_id", nullable = false)
     private Professor professor;
 
+    @ManyToOne
+    @JoinColumn(name = "turma_id", nullable = false)
+    private Turma turma;
+
     private String titulo;
     private String descricao;
 
     private Boolean ativo = true;
     private LocalDateTime criadoEm = LocalDateTime.now();
+    @Column(name = "data_inicio")
+    private LocalDate dataInicio;
+    @Column(name = "data_fim")
+    private LocalDate dataFim;
 }
