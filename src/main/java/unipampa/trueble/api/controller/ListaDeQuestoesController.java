@@ -10,6 +10,7 @@ import unipampa.trueble.api.dto.ListaDeQuestoesResponseDTO;
 import unipampa.trueble.api.services.ListaDeQuestoesService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("${api.version}/listas")
@@ -30,5 +31,10 @@ public class ListaDeQuestoesController {
     @GetMapping("/minhas")
     public ResponseEntity<List<ListaDeQuestoesResponseDTO>> listarMinhasListas(@AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(listaDeQuestoesService.listarMinhasListas(jwt));
+    }
+
+    @GetMapping("/turma/{turmaId}")
+    public ResponseEntity<List<ListaDeQuestoesResponseDTO>> listarListasDaTurma(@PathVariable UUID turmaId) {
+        return ResponseEntity.ok(listaDeQuestoesService.listarListasDaTurma(turmaId));
     }
 }

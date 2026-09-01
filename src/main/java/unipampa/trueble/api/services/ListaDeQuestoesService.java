@@ -7,12 +7,14 @@ import unipampa.trueble.api.domain.ListaDeQuestoes;
 import unipampa.trueble.api.domain.ListaQuestao;
 import unipampa.trueble.api.domain.Professor;
 import unipampa.trueble.api.domain.Questao;
+import unipampa.trueble.api.domain.Turma;
 import unipampa.trueble.api.dto.ListaDeQuestoesRequestDTO;
 import unipampa.trueble.api.dto.ListaDeQuestoesResponseDTO;
 import unipampa.trueble.api.dto.ListaQuestaoRequestDTO;
 import unipampa.trueble.api.repository.ListaDeQuestoesRepository;
 import unipampa.trueble.api.repository.ListaQuestaoRepository;
 import unipampa.trueble.api.repository.QuestaoRepository;
+import unipampa.trueble.api.repository.TurmaRepository;
 import unipampa.trueble.api.repository.UsuarioRepository;
 
 import java.time.LocalDateTime;
@@ -25,15 +27,18 @@ public class ListaDeQuestoesService {
     private final ListaDeQuestoesRepository listaDeQuestoesRepository;
     private final ListaQuestaoRepository listaQuestaoRepository;
     private final QuestaoRepository questaoRepository;
+    private final TurmaRepository turmaRepository;
     private final UsuarioRepository usuarioRepository;
 
     public ListaDeQuestoesService(ListaDeQuestoesRepository listaDeQuestoesRepository,
                                   ListaQuestaoRepository listaQuestaoRepository,
                                   QuestaoRepository questaoRepository,
+                                  TurmaRepository turmaRepository,
                                   UsuarioRepository usuarioRepository) {
         this.listaDeQuestoesRepository = listaDeQuestoesRepository;
         this.listaQuestaoRepository = listaQuestaoRepository;
         this.questaoRepository = questaoRepository;
+        this.turmaRepository = turmaRepository;
         this.usuarioRepository = usuarioRepository;
     }
 
@@ -44,9 +49,17 @@ public class ListaDeQuestoesService {
         Professor professor = (Professor) usuarioRepository.findById(professorId)
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
 
+        Turma turma = turmaRepository.findById(dto.turmaId())
+                .orElseThrow(() -> new RuntimeException("Turma não encontrada"));
+
+        if (!turma.getProfessor().getId().equals(professorId)) {
+            throw new RuntimeException("Sem permissão para vincular esta lista a essa turma");
+        }
+
         // 1. Cria e guarda a "Capa" da Lista
         ListaDeQuestoes lista = new ListaDeQuestoes();
         lista.setProfessor(professor);
+        lista.setTurma(turma);
         lista.setTitulo(dto.titulo());
         lista.setDescricao(dto.descricao());
         lista.setAtivo(true);
@@ -81,6 +94,16 @@ public class ListaDeQuestoesService {
         return minhasListas.stream().map(lista -> {
             Integer totalQuestoes = listaQuestaoRepository.countByListaId(lista.getId());
             return new ListaDeQuestoesResponseDTO(lista, totalQuestoes);
+        }).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ListaDeQuestoesResponseDTO> listarListasDaTurma(UUID turmaId) {
+        List<ListaDeQuestoes> listas = listaDeQuestoesRepository.findAllByTurmaIdAndAtivoTrue(turmaId);
+
+        return listas.stream().map(lista -> {
+        Integer totalQuestoes = listaQuestaoRepository.countByListaId(lista.getId());
+        return new ListaDeQuestoesResponseDTO(lista, totalQuestoes);
         }).toList();
     }
 }

@@ -1,6 +1,8 @@
 package unipampa.trueble.api.dto;
 
 import unipampa.trueble.api.domain.ListaDeQuestoes;
+
+import java.time.LocalDate;
 import java.util.UUID;
 
 /**
@@ -16,6 +18,10 @@ public record ListaDeQuestoesResponseDTO(
         String titulo,
         String descricao,
         String nomeProfessor,
+        UUID turmaId,
+        String nomeTurma,
+        LocalDate dataInicio,
+        LocalDate dataFim,
         Integer totalQuestoes
 ) {
     public ListaDeQuestoesResponseDTO(ListaDeQuestoes lista, Integer totalQuestoes) {
@@ -24,6 +30,10 @@ public record ListaDeQuestoesResponseDTO(
                 lista.getTitulo(),
                 lista.getDescricao(),
                 lista.getProfessor().getNome(),
+                lista.getTurma().getId(),
+                lista.getTurma().getNome(),
+                lista.getDataInicio(),
+                lista.getDataFim(),
                 totalQuestoes
         );
     }
