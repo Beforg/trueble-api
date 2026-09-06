@@ -19,14 +19,10 @@ public interface QuestaoRepository extends JpaRepository<Questao, UUID> {
         SELECT q FROM Questao q 
         JOIN q.categoria c
         WHERE q.ativo = true
-        AND (:titulo IS NULL OR q.titulo ILIKE CONCAT('%', :titulo, '%'))
-        AND (:tipoQuestao IS NULL OR q.tipoQuestao = :tipoQuestao)
         AND (:categoriaId IS NULL OR c.id = :categoriaId)
         AND (q.publico = true OR q.professor.id = :professorId) 
     """)
     Page<Questao> buscarBancoDeQuestoes(
-            @Param("titulo") String titulo,
-            @Param("tipoQuestao") TipoQuestao tipoQuestao,
             @Param("categoriaId") UUID categoriaId,
             @Param("professorId") UUID professorId,
             Pageable pageable

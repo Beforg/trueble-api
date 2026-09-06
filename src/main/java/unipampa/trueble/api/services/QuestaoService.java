@@ -77,15 +77,13 @@ public class QuestaoService {
     @Transactional(readOnly = true)
     public Page<QuestaoResponseDTO> listarBancoDeQuestoes(
             Jwt jwt,
-            String titulo,
-            TipoQuestao tipoQuestao,
             UUID categoriaId,
             Pageable pageable) {
 
         UUID professorId = UUID.fromString(jwt.getSubject());
 
         Page<Questao> questoes = questaoRepository.buscarBancoDeQuestoes(
-                titulo, tipoQuestao, categoriaId, professorId, pageable
+                 categoriaId, professorId, pageable
         );
         return questoes.map(QuestaoResponseDTO::new);
     }

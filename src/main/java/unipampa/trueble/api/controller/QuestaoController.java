@@ -57,16 +57,11 @@ public class QuestaoController {
     @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso")
     public ResponseEntity<Page<QuestaoResponseDTO>> buscarBancoQuestoes(
             @AuthenticationPrincipal Jwt jwt,
-            @Parameter(description = "Filtro parcial por título da questão (case-insensitive)")
-            @RequestParam(required = false) String titulo,
-            @Parameter(description = "Filtro exato pelo tipo da questão")
-            @RequestParam(required = false) TipoQuestao tipoQuestao,
-            @Parameter(description = "Filtro pelo ID único da categoria")
             @RequestParam(required = false) UUID categoriaId,
             @ParameterObject @PageableDefault(size = 10, sort = "criadoEm") Pageable pageable
     ) {
         Page<QuestaoResponseDTO> pagina = questaoService.listarBancoDeQuestoes(
-                jwt, titulo, tipoQuestao, categoriaId, pageable
+                jwt, categoriaId, pageable
         );
 
         return ResponseEntity.ok(pagina);
