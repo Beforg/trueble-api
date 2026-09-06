@@ -34,4 +34,5 @@ public class Turma {
 
     private Boolean ativo = true;
     private LocalDateTime criadoEm = LocalDateTime.now();
+
 }
