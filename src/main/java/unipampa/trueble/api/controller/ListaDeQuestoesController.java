@@ -7,6 +7,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import unipampa.trueble.api.dto.ListaDeQuestoesRequestDTO;
 import unipampa.trueble.api.dto.ListaDeQuestoesResponseDTO;
+import unipampa.trueble.api.dto.ListaQuestaoRequestDTO;
+import unipampa.trueble.api.dto.ListaQuestaoResponseDTO;
 import unipampa.trueble.api.services.ListaDeQuestoesService;
 
 import java.util.List;
@@ -28,6 +30,17 @@ public class ListaDeQuestoesController {
         return ResponseEntity.status(HttpStatus.CREATED).body(listaDeQuestoesService.criarLista(jwt, dto));
     }
 
+    @PostMapping("/{id}/questoes")
+    public ResponseEntity<Void> adicionarQuestoes(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID id,
+            @RequestBody List<ListaQuestaoRequestDTO> novasQuestoes) {
+
+        listaDeQuestoesService.adicionarQuestoes(jwt, id, novasQuestoes);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
     @GetMapping("/minhas")
     public ResponseEntity<List<ListaDeQuestoesResponseDTO>> listarMinhasListas(@AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(listaDeQuestoesService.listarMinhasListas(jwt));
@@ -36,5 +49,15 @@ public class ListaDeQuestoesController {
     @GetMapping("/turma/{turmaId}")
     public ResponseEntity<List<ListaDeQuestoesResponseDTO>> listarListasDaTurma(@PathVariable UUID turmaId) {
         return ResponseEntity.ok(listaDeQuestoesService.listarListasDaTurma(turmaId));
+    }
+
+    @GetMapping("/{id}/questoes")
+    public ResponseEntity<List<ListaQuestaoResponseDTO>> listarQuestoesDaLista(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID id) {
+
+        List<ListaQuestaoResponseDTO> questoes = listaDeQuestoesService.listarQuestoesDaLista(jwt, id);
+
+        return ResponseEntity.ok(questoes);
     }
 }
