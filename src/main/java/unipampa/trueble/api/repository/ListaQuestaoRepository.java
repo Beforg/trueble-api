@@ -13,7 +13,7 @@ public interface ListaQuestaoRepository extends JpaRepository<ListaQuestao, UUID
     @Query("""
         SELECT lq FROM ListaQuestao lq
         JOIN FETCH lq.questao q
-        WHERE lq.listaDeQuestoes.id = :listaId
+        WHERE lq.lista.id = :listaId
         ORDER BY lq.ordem ASC
     """)
     List<ListaQuestao> buscarComQuestoesPorListaId(@Param("listaId") UUID listaId);
