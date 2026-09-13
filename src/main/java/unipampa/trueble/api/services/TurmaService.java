@@ -111,8 +111,8 @@ public class TurmaService {
         }
 
 
-        Aluno aluno = alunoTurmaRepository.findById(alunoId)
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado.")).getAluno();
+        Aluno aluno = (Aluno) usuarioRepository.findById(alunoId)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado."));
 
         AlunoTurma matricula = new AlunoTurma();
         matricula.setAluno(aluno);
