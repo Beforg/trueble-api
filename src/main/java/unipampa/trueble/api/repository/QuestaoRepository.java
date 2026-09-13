@@ -27,4 +27,12 @@ public interface QuestaoRepository extends JpaRepository<Questao, UUID> {
             @Param("professorId") UUID professorId,
             Pageable pageable
     );
+
+    @Query("""
+        SELECT q FROM ListaQuestao lq 
+        JOIN lq.questao q 
+        WHERE lq.lista.id = :listaId 
+        AND q.ativo = true
+    """)
+    Page<Questao> buscarQuestoesPorListaId(@Param("listaId") UUID listaId, Pageable pageable);
 }

@@ -1,5 +1,7 @@
 package unipampa.trueble.api.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +13,7 @@ import unipampa.trueble.api.domain.Turma;
 import unipampa.trueble.api.dto.ListaDeQuestoesRequestDTO;
 import unipampa.trueble.api.dto.ListaDeQuestoesResponseDTO;
 import unipampa.trueble.api.dto.ListaQuestaoRequestDTO;
+import unipampa.trueble.api.dto.QuestaoResponseDTO;
 import unipampa.trueble.api.repository.ListaDeQuestoesRepository;
 import unipampa.trueble.api.repository.ListaQuestaoRepository;
 import unipampa.trueble.api.repository.QuestaoRepository;
@@ -52,9 +55,9 @@ public class ListaDeQuestoesService {
         Turma turma = turmaRepository.findById(dto.turmaId())
                 .orElseThrow(() -> new RuntimeException("Turma não encontrada"));
 
-        if (!turma.getProfessor().getId().equals(professorId)) {
-            throw new RuntimeException("Sem permissão para vincular esta lista a essa turma");
-        }
+//        if (!turma.getProfessor().getId().equals(professorId)) {
+//            throw new RuntimeException("Sem permissão para vincular esta lista a essa turma");
+//        }
 
         // 1. Cria e guarda a "Capa" da Lista
         ListaDeQuestoes lista = new ListaDeQuestoes();
@@ -105,5 +108,23 @@ public class ListaDeQuestoesService {
         Integer totalQuestoes = listaQuestaoRepository.countByListaId(lista.getId());
         return new ListaDeQuestoesResponseDTO(lista, totalQuestoes);
         }).toList();
+    }
+
+    public ListaDeQuestoesResponseDTO atualizarLista(UUID listaId, ListaDeQuestoesRequestDTO dto) {
+        ListaDeQuestoes lista = listaDeQuestoesRepository.findById(listaId).orElseThrow(() -> new RuntimeException("Lista não encontrada"));
+        lista.setTitulo(dto.titulo());
+        lista.setDescricao(dto.descricao());
+        return new ListaDeQuestoesResponseDTO(listaDeQuestoesRepository.save(lista), 0);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<QuestaoResponseDTO> listarQuestoesDaLista(UUID listaId, Pageable pageable) {
+
+        if (!listaDeQuestoesRepository.existsById(listaId)) {
+            throw new RuntimeException("Lista de questões não encontrada.");
+        }
+
+        return questaoRepository.buscarQuestoesPorListaId(listaId, pageable)
+                .map(QuestaoResponseDTO::new);
     }
 }
