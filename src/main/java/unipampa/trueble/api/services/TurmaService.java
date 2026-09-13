@@ -1,5 +1,6 @@
 package unipampa.trueble.api.services;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import unipampa.trueble.api.domain.Aluno;
@@ -15,6 +16,7 @@ import unipampa.trueble.api.repository.TurmaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -41,6 +43,7 @@ public class TurmaService {
 
         Turma turma = new Turma();
         turma.setProfessor(professor);
+        turma.setCodigo(gerarCodigoDaTurma());
         turma.setNome(dto.nomeTurma());
         turma.setDescricao(dto.descricao());
         turma.setDataInicio(dto.dataInicio());
@@ -50,6 +53,11 @@ public class TurmaService {
 
         turma = turmaRepository.save(turma);
         return new TurmaResponseDTO(turma);
+    }
+
+    private String gerarCodigoDaTurma() {
+        char[] alfabeto = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+        return NanoIdUtils.randomNanoId(new Random(), alfabeto, 7);
     }
 
     @Transactional

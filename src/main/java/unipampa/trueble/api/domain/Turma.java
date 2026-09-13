@@ -19,6 +19,9 @@ public class Turma {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(length = 10, unique = true, nullable = false)
+    private String codigo;
+
     @ManyToOne
     @JoinColumn(name = "professor_id", nullable = false)
     private Professor professor;
