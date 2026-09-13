@@ -12,7 +12,8 @@ public record TurmaResponseDTO(
         String nomeProfessor,
         String descricao,
         LocalDate dataInicio,
-        LocalDate dataFim
+        LocalDate dataFim,
+        String codigo
 ) {
     public TurmaResponseDTO (Turma turma) {
         this(
@@ -21,7 +22,8 @@ public record TurmaResponseDTO(
                 turma.getProfessor().getNome(),
                 turma.getDescricao(),
                 turma.getDataInicio(),
-                turma.getDataFim()
+                turma.getDataFim(),
+                turma.getCodigo()
         );
     }
 }
