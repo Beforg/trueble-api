@@ -4,6 +4,6 @@ import java.util.UUID;
  * Responsável por saber quem é a questão (UUID)
  * */
 public record ListaQuestaoRequestDTO(
-        UUID questaoId,
+        UUID id,
         Integer ordem
 ) {}

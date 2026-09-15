@@ -72,8 +72,8 @@ public class ListaDeQuestoesService {
         // 2. Guarda a Entidade "Ponte" (ListaQuestao) para associar as questões à lista
         if (dto.questoes() != null && !dto.questoes().isEmpty()) {
             for (ListaQuestaoRequestDTO questaoDto : dto.questoes()) {
-                Questao questao = questaoRepository.findById(questaoDto.questaoId())
-                        .orElseThrow(() -> new RuntimeException("Questão não encontrada: " + questaoDto.questaoId()));
+                Questao questao = questaoRepository.findById(questaoDto.id())
+                        .orElseThrow(() -> new RuntimeException("Questão não encontrada: " + questaoDto.id()));
 
                 ListaQuestao listaQuestao = new ListaQuestao();
                 listaQuestao.setLista(lista);
