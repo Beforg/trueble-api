@@ -72,15 +72,7 @@ public class ListaDeQuestoesService {
         // 2. Guarda a Entidade "Ponte" (ListaQuestao) para associar as questões à lista
         if (dto.questoes() != null && !dto.questoes().isEmpty()) {
             for (ListaQuestaoRequestDTO questaoDto : dto.questoes()) {
-                Questao questao = questaoRepository.findById(questaoDto.id())
-                        .orElseThrow(() -> new RuntimeException("Questão não encontrada: " + questaoDto.id()));
-
-                ListaQuestao listaQuestao = new ListaQuestao();
-                listaQuestao.setLista(lista);
-                listaQuestao.setQuestao(questao);
-                listaQuestao.setOrdem(questaoDto.ordem());
-
-                listaQuestaoRepository.save(listaQuestao);
+                buscarQuestoes(lista, questaoDto);
             }
         }
 
@@ -115,6 +107,28 @@ public class ListaDeQuestoesService {
         lista.setTitulo(dto.titulo());
         lista.setDescricao(dto.descricao());
         return new ListaDeQuestoesResponseDTO(listaDeQuestoesRepository.save(lista), 0);
+    }
+
+    @Transactional
+    public void adicionarQuestoes(UUID listaId, List<ListaQuestaoRequestDTO> novasQuestoes) {
+        ListaDeQuestoes lista = listaDeQuestoesRepository.findById(listaId)
+                .orElseThrow(() -> new RuntimeException("Lista não encontrada"));
+
+        for (ListaQuestaoRequestDTO questaoDto : novasQuestoes) {
+            buscarQuestoes(lista, questaoDto);
+        }
+    }
+
+    private void buscarQuestoes(ListaDeQuestoes lista, ListaQuestaoRequestDTO questaoDto) {
+        Questao questao = questaoRepository.findById(questaoDto.id())
+                .orElseThrow(() -> new RuntimeException("Questão não encontrada: " + questaoDto.id()));
+
+        ListaQuestao listaQuestao = new ListaQuestao();
+        listaQuestao.setLista(lista);
+        listaQuestao.setQuestao(questao);
+        listaQuestao.setOrdem(questaoDto.ordem());
+
+        listaQuestaoRepository.save(listaQuestao);
     }
 
     @Transactional(readOnly = true)
