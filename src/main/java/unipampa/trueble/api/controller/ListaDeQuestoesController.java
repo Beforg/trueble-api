@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import unipampa.trueble.api.dto.ListaDeQuestoesRequestDTO;
 import unipampa.trueble.api.dto.ListaDeQuestoesResponseDTO;
+import unipampa.trueble.api.dto.ListaQuestaoRequestDTO;
 import unipampa.trueble.api.dto.QuestaoResponseDTO;
 import unipampa.trueble.api.services.ListaDeQuestoesService;
 
@@ -47,6 +48,13 @@ public class ListaDeQuestoesController {
     @PutMapping("/{listaId}")
     public ResponseEntity<ListaDeQuestoesResponseDTO> atualizarLista(@PathVariable UUID listaId, @RequestBody ListaDeQuestoesRequestDTO dto) {
         return ResponseEntity.ok(listaDeQuestoesService.atualizarLista(listaId, dto));
+    }
+
+    @PostMapping("/{id}/questoes")
+    public ResponseEntity<Void> adicionarQuestoes(@PathVariable("id") UUID listaId,
+                                                   @RequestBody List<ListaQuestaoRequestDTO> novasQuestoes) {
+        listaDeQuestoesService.adicionarQuestoes(listaId, novasQuestoes);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{id}/questoes")
