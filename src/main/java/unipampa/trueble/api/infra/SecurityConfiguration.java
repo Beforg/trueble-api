@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,6 +14,7 @@ import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.spec.SecretKeySpec;
 
@@ -44,7 +46,12 @@ public class SecurityConfiguration {
     }
     @Bean
     public JwtDecoder jwtDecoder() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(15000);
+        factory.setReadTimeout(15000);
+        RestTemplate restTemplate = new RestTemplate(factory);
         return NimbusJwtDecoder.withJwkSetUri(jwkSetUri)
+                .restOperations(restTemplate)
                 .jwsAlgorithm(SignatureAlgorithm.ES256)
                 .build();
     }

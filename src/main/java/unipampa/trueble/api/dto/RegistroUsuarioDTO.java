@@ -2,7 +2,7 @@ package unipampa.trueble.api.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import unipampa.trueble.api.domain.Role;
+import unipampa.trueble.api.enums.Role;
 
 import java.util.UUID;
 

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import unipampa.trueble.api.enums.Role;
 
 @Entity
 @Table(name = "usuarios")
@@ -28,4 +29,5 @@ public abstract class Usuario {
     @Column(name = "data_cadastro", updatable = false)
     private LocalDateTime dataCadastro;
 
+    public abstract String getNome();
 }
