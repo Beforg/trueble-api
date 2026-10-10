@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import unipampa.trueble.api.dto.TurmaRequestDTO;
 import unipampa.trueble.api.dto.TurmaResponseDTO;
+import unipampa.trueble.api.dto.UsuarioResponseDTO;
 import unipampa.trueble.api.services.TurmaService;
 
 import java.util.List;
@@ -75,5 +76,15 @@ public class TurmaController {
         turmaService.matricularAluno(alunoId, turmaId);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping ("/{id}/alunos")
+    @Operation(summary = "Listar Alunos da Turma", description = "Lista todos os alunos matriculados em uma turma específica.")
+    public ResponseEntity<List<UsuarioResponseDTO>> listarAlunosDaTurma(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable("id") UUID turmaId) {
+
+        UUID professorId = UUID.fromString(jwt.getSubject());
+        return ResponseEntity.ok(turmaService.listarAlunosDaTurma(professorId, turmaId));
     }
 }
