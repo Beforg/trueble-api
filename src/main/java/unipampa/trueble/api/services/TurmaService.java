@@ -1,18 +1,21 @@
 package unipampa.trueble.api.services;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
 import unipampa.trueble.api.domain.Aluno;
 import unipampa.trueble.api.domain.AlunoTurma;
 import unipampa.trueble.api.domain.Professor;
 import unipampa.trueble.api.domain.Turma;
 import unipampa.trueble.api.dto.TurmaRequestDTO;
 import unipampa.trueble.api.dto.TurmaResponseDTO;
+import unipampa.trueble.api.dto.UsuarioResponseDTO;
 import unipampa.trueble.api.repository.AlunoTurmaRepository;
 import unipampa.trueble.api.repository.UsuarioRepository;
 import unipampa.trueble.api.repository.TurmaRepository;
-
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,8 +30,8 @@ public class TurmaService {
     private final AlunoTurmaRepository alunoTurmaRepository;
 
     public TurmaService(TurmaRepository turmaRepository,
-                        UsuarioRepository usuarioRepository,
-                        AlunoTurmaRepository alunoTurmaRepository) {
+            UsuarioRepository usuarioRepository,
+            AlunoTurmaRepository alunoTurmaRepository) {
         this.turmaRepository = turmaRepository;
         this.usuarioRepository = usuarioRepository;
         this.alunoTurmaRepository = alunoTurmaRepository;
@@ -39,7 +42,7 @@ public class TurmaService {
         validarDatas(dto);
 
         Professor professor = (Professor) usuarioRepository.findById(professorId)
-                .orElseThrow(() -> new RuntimeException("Professor não encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professor não encontrado."));
 
         Turma turma = new Turma();
         turma.setProfessor(professor);
@@ -65,10 +68,10 @@ public class TurmaService {
         validarDatas(dto);
 
         Turma turma = turmaRepository.findById(turmaId)
-                .orElseThrow(() -> new RuntimeException("Turma não encontrada."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Turma não encontrada."));
 
         if (!turma.getProfessor().getId().equals(professorId)) {
-            throw new RuntimeException("Sem permissão para editar esta turma.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sem permissão para editar esta turma.");
         }
 
         turma.setNome(dto.nomeTurma());
@@ -100,19 +103,19 @@ public class TurmaService {
     public void matricularAluno(UUID alunoId, UUID turmaId) {
 
         Turma turma = turmaRepository.findById(turmaId)
-                .orElseThrow(() -> new RuntimeException("Turma não encontrada."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Turma não encontrada."));
 
         if (!turma.getAtivo()) {
-            throw new RuntimeException("Não é possível se matricular em uma turma inativa.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Não é possível se matricular em uma turma inativa.");
         }
 
         if (alunoTurmaRepository.existsByAlunoIdAndTurmaId(alunoId, turmaId)) {
-            throw new RuntimeException("Aluno já está matriculado nesta turma.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Aluno já está matriculado nesta turma.");
         }
 
-
         Aluno aluno = (Aluno) usuarioRepository.findById(alunoId)
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Aluno não encontrado."));
 
         AlunoTurma matricula = new AlunoTurma();
         matricula.setAluno(aluno);
@@ -127,4 +130,22 @@ public class TurmaService {
             throw new IllegalArgumentException("A data de início não pode ser posterior à data de término.");
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<UsuarioResponseDTO> listarAlunosDaTurma(UUID professorId, UUID turmaId) {
+        Turma turma = turmaRepository.findById(turmaId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Turma não encontrada."));
+
+        if (!turma.getProfessor().getId().equals(professorId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Sem permissão para visualizar os alunos desta turma.");
+        }
+
+        return alunoTurmaRepository.findByTurmaId(turmaId)
+                .stream()
+                .map(AlunoTurma::getAluno)
+                .map(UsuarioResponseDTO::new)
+                .toList();
+    }
+
 }
