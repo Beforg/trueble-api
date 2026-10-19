@@ -102,10 +102,20 @@ public class ListaDeQuestoesService {
         }).toList();
     }
 
+    @Transactional
     public ListaDeQuestoesResponseDTO atualizarLista(UUID listaId, ListaDeQuestoesRequestDTO dto) {
-        ListaDeQuestoes lista = listaDeQuestoesRepository.findById(listaId).orElseThrow(() -> new RuntimeException("Lista não encontrada"));
+        ListaDeQuestoes lista = listaDeQuestoesRepository.findById(listaId)
+                .orElseThrow(() -> new RuntimeException("Lista não encontrada"));
+
+        Turma turma = turmaRepository.findById(dto.turmaId())
+                .orElseThrow(() -> new RuntimeException("Turma não encontrada"));
+
         lista.setTitulo(dto.titulo());
         lista.setDescricao(dto.descricao());
+        lista.setTurma(turma);
+        lista.setDataInicio(dto.dataInicio());
+        lista.setDataFim(dto.dataFim());
+
         return new ListaDeQuestoesResponseDTO(listaDeQuestoesRepository.save(lista), 0);
     }
 
@@ -140,5 +150,14 @@ public class ListaDeQuestoesService {
 
         return questaoRepository.buscarQuestoesPorListaId(listaId, pageable)
                 .map(QuestaoResponseDTO::new);
+    }
+
+    @Transactional
+    public void removerQuestao(UUID listaId, UUID questaoId) {
+        if (!listaDeQuestoesRepository.existsById(listaId)) {
+            throw new RuntimeException("Lista de questões não encontrada.");
+        }
+
+        listaQuestaoRepository.deleteByListaIdAndQuestaoId(listaId, questaoId);
     }
 }

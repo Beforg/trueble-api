@@ -66,4 +66,11 @@ public class ListaDeQuestoesController {
         Page<QuestaoResponseDTO> questoes = listaDeQuestoesService.listarQuestoesDaLista(listaId, pageable);
         return ResponseEntity.ok(questoes);
     }
+
+    @DeleteMapping("/{listaId}/questoes/{questaoId}")
+    public ResponseEntity<Void> removerQuestaoDaLista(@PathVariable UUID listaId,
+                                                      @PathVariable UUID questaoId) {
+        listaDeQuestoesService.removerQuestao(listaId, questaoId);
+        return ResponseEntity.noContent().build();
+    }
 }
