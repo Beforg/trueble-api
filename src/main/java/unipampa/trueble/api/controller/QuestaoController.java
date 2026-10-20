@@ -21,7 +21,6 @@ import unipampa.trueble.api.services.QuestaoService;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.List;
 
 @RestController
 @RequestMapping("${api.version}/questoes")
@@ -37,6 +36,37 @@ public class QuestaoController {
     @PostMapping
     public ResponseEntity<QuestaoResponseDTO> criarQuestao(@AuthenticationPrincipal Jwt jwt, @RequestBody QuestaoRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(questaoService.criarQuestao(jwt, dto));
+    }
+
+    @PutMapping("/{questaoId}")
+    @Operation(
+            summary = "Atualizar questão",
+            description = "Atualiza os dados da questão. A categoria não pode ser alterada por este endpoint; " +
+                    "o campo categoria enviado no corpo será ignorado. Apenas o professor proprietário pode editar."
+    )
+    @ApiResponse(responseCode = "200", description = "Questão atualizada com sucesso")
+    @ApiResponse(responseCode = "403", description = "O usuário não é o proprietário da questão")
+    @ApiResponse(responseCode = "404", description = "Questão não encontrada")
+    public ResponseEntity<QuestaoResponseDTO> atualizarQuestao(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID questaoId,
+            @RequestBody QuestaoRequestDTO dto) {
+        return ResponseEntity.ok(questaoService.atualizarQuestao(jwt, questaoId, dto));
+    }
+
+    @DeleteMapping("/{questaoId}")
+    @Operation(
+            summary = "Excluir questão",
+            description = "Desativa uma questão (exclusão lógica). Apenas o professor proprietário pode excluí-la."
+    )
+    @ApiResponse(responseCode = "204", description = "Questão excluída com sucesso")
+    @ApiResponse(responseCode = "403", description = "O usuário não é o proprietário da questão")
+    @ApiResponse(responseCode = "404", description = "Questão não encontrada")
+    public ResponseEntity<Void> deletarQuestao(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID questaoId) {
+        questaoService.deletarQuestao(jwt, questaoId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/minhas")
