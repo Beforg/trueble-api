@@ -12,7 +12,6 @@ import unipampa.trueble.api.domain.Professor;
 import unipampa.trueble.api.domain.Questao;
 import unipampa.trueble.api.dto.QuestaoRequestDTO;
 import unipampa.trueble.api.dto.QuestaoResponseDTO;
-import unipampa.trueble.api.enums.TipoQuestao;
 import unipampa.trueble.api.repository.CategoriaRepository;
 import unipampa.trueble.api.repository.QuestaoRepository;
 import unipampa.trueble.api.repository.UsuarioRepository;
@@ -40,7 +39,6 @@ public class QuestaoService {
     @Transactional
     public QuestaoResponseDTO criarQuestao(Jwt jwt, QuestaoRequestDTO dto) {
         UUID professorId = UUID.fromString(jwt.getSubject());
-        System.out.println(UUID.fromString(jwt.getSubject()));
         Professor professor = (Professor) usuarioRepository.findById(professorId)
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
 

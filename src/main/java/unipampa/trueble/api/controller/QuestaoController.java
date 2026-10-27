@@ -2,7 +2,6 @@ package unipampa.trueble.api.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.core.annotations.ParameterObject;
@@ -16,7 +15,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import unipampa.trueble.api.dto.QuestaoRequestDTO;
 import unipampa.trueble.api.dto.QuestaoResponseDTO;
-import unipampa.trueble.api.enums.TipoQuestao;
 import unipampa.trueble.api.services.QuestaoService;
 
 import java.util.List;

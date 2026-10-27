@@ -1,11 +1,9 @@
 package unipampa.trueble.api.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import unipampa.trueble.api.dto.CategoriaRequestDTO;
 import unipampa.trueble.api.dto.CategoriaResponseDTO;
