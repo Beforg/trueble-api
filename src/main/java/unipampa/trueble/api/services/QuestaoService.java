@@ -127,4 +127,21 @@ public class QuestaoService {
         );
         return questoes.map(QuestaoResponseDTO::new);
     }
+
+    @Transactional(readOnly = true)
+    public QuestaoResponseDTO buscarQuestaoPorId(Jwt jwt, UUID questaoId) {
+        UUID usuarioId = UUID.fromString(jwt.getSubject());
+        Questao questao = questaoRepository.findById(questaoId)
+                .filter(q -> Boolean.TRUE.equals(q.getAtivo()))
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Questão não encontrada."));
+
+        if (!Boolean.TRUE.equals(questao.getPublico())
+                && !questao.getProfessor().getId().equals(usuarioId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "Sem permissão para visualizar esta questão.");
+        }
+
+        return new QuestaoResponseDTO(questao);
+    }
 }

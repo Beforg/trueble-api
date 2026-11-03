@@ -36,6 +36,20 @@ public class QuestaoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(questaoService.criarQuestao(jwt, dto));
     }
 
+    @GetMapping("/{questaoId}")
+    @Operation(
+            summary = "Buscar questão por ID",
+            description = "Retorna uma questão ativa. Questões públicas podem ser visualizadas por qualquer usuário autenticado; questões privadas, apenas pelo professor proprietário."
+    )
+    @ApiResponse(responseCode = "200", description = "Questão encontrada")
+    @ApiResponse(responseCode = "403", description = "O usuário não tem permissão para visualizar esta questão")
+    @ApiResponse(responseCode = "404", description = "Questão não encontrada")
+    public ResponseEntity<QuestaoResponseDTO> buscarQuestaoPorId(
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID questaoId) {
+        return ResponseEntity.ok(questaoService.buscarQuestaoPorId(jwt, questaoId));
+    }
+
     @PutMapping("/{questaoId}")
     @Operation(
             summary = "Atualizar questão",
