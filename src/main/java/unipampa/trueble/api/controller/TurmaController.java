@@ -66,14 +66,14 @@ public class TurmaController {
         return ResponseEntity.ok(turmaService.listarMinhasTurmasComoAluno(alunoId));
     }
 
-    @PostMapping("/{id}/matricular")
+    @PostMapping("/codigo/{codigo}/matricular")
     @Operation(summary = "Matricular Aluno", description = "Matricula o aluno autenticado em uma turma específica.")
     public ResponseEntity<Void> matricular(
             @AuthenticationPrincipal Jwt jwt,
-            @PathVariable("id") UUID turmaId) {
+            @PathVariable String codigo) {
 
         UUID alunoId = UUID.fromString(jwt.getSubject());
-        turmaService.matricularAluno(alunoId, turmaId);
+        turmaService.matricularAluno(alunoId, codigo);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
