@@ -100,9 +100,8 @@ public class TurmaService {
     }
 
     @Transactional
-    public void matricularAluno(UUID alunoId, UUID turmaId) {
-
-        Turma turma = turmaRepository.findById(turmaId)
+    public void matricularAluno(UUID alunoId, String codigoTurma) {
+        Turma turma = turmaRepository.findByCodigo(codigoTurma)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Turma não encontrada."));
 
         if (!turma.getAtivo()) {
@@ -110,7 +109,7 @@ public class TurmaService {
                     "Não é possível se matricular em uma turma inativa.");
         }
 
-        if (alunoTurmaRepository.existsByAlunoIdAndTurmaId(alunoId, turmaId)) {
+        if (alunoTurmaRepository.existsByAlunoIdAndTurmaId(alunoId, turma.getId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Aluno já está matriculado nesta turma.");
         }
 

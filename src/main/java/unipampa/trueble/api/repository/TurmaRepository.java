@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import unipampa.trueble.api.domain.Turma;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TurmaRepository extends JpaRepository<Turma, UUID> {
@@ -15,4 +16,6 @@ public interface TurmaRepository extends JpaRepository<Turma, UUID> {
 
     @Query("SELECT t FROM AlunoTurma at JOIN at.turma t JOIN FETCH t.professor WHERE at.aluno.id = :alunoId AND t.ativo = true")
     List<Turma> buscarTurmasDoAluno(@Param("alunoId") UUID alunoId);
+
+    Optional<Turma> findByCodigo(String codigo);
 }

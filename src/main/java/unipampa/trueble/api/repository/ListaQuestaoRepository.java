@@ -6,5 +6,6 @@ import java.util.UUID;
 
 public interface ListaQuestaoRepository extends JpaRepository<ListaQuestao, UUID> {
     Integer countByListaId(UUID listaId);
+    boolean existsByListaIdAndQuestaoId(UUID listaId, UUID questaoId);
     void deleteByListaIdAndQuestaoId(UUID listaId, UUID questaoId);
 }

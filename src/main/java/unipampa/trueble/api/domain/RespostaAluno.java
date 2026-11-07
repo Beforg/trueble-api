@@ -26,8 +26,8 @@ public class RespostaAluno {
     private Aluno aluno;
 
     @ManyToOne
-    @JoinColumn(name = "atividade_id", nullable = false)
-    private Atividade atividade;
+    @JoinColumn(name = "lista_id", nullable = false)
+    private ListaDeQuestoes lista;
 
     @ManyToOne
     @JoinColumn(name = "questao_id", nullable = false)
