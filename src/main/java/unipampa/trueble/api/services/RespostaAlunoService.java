@@ -69,6 +69,7 @@ public class RespostaAlunoService {
         respostaAluno.setLista(lista);
         respostaAluno.setQuestao(questao);
         respostaAluno.setResposta(dto.resposta());
+        respostaAluno.setCorreta(dto.correta());
         respostaAluno.setRespondidaEm(LocalDateTime.now());
 
         return new RespostaAlunoResponseDTO(respostaAlunoRepository.save(respostaAluno));
