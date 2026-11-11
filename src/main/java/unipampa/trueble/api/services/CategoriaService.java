@@ -1,7 +1,9 @@
 package unipampa.trueble.api.services;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import unipampa.trueble.api.domain.Categoria;
 import unipampa.trueble.api.dto.CategoriaRequestDTO;
 import unipampa.trueble.api.dto.CategoriaResponseDTO;
@@ -28,8 +30,8 @@ public class CategoriaService {
 
             Categoria categoriaPai = categoriaRepository
                     .findById(dto.categoriaPaiId())
-                    .orElseThrow(() -> new RuntimeException(
-                            "Categoria pai não encontrada"
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Categoria pai não encontrada"
                     ));
 
             novaCategoria.setCategoriaPai(categoriaPai);
@@ -52,8 +54,8 @@ public class CategoriaService {
 
         Categoria categoria = categoriaRepository
                 .findById(UUID.fromString(id))
-                .orElseThrow(() -> new RuntimeException(
-                        "Categoria não encontrada"
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Categoria não encontrada"
                 ));
 
         categoria.atualizarCategoria(dto);
@@ -62,15 +64,15 @@ public class CategoriaService {
         if (dto.categoriaPaiId() != null) {
 
             if (categoria.getId().equals(dto.categoriaPaiId())) {
-                throw new RuntimeException(
-                        "Uma categoria não pode ser sua própria categoria pai"
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Uma categoria não pode ser sua própria categoria pai"
                 );
             }
 
             Categoria categoriaPai = categoriaRepository
                     .findById(dto.categoriaPaiId())
-                    .orElseThrow(() -> new RuntimeException(
-                            "Categoria pai não encontrada"
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "Categoria pai não encontrada"
                     ));
 
             categoria.setCategoriaPai(categoriaPai);
