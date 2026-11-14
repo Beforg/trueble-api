@@ -75,6 +75,13 @@ public class CategoriaService {
                             HttpStatus.NOT_FOUND, "Categoria pai não encontrada"
                     ));
 
+            if (isDescendente(categoria, categoriaPai.getId())) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        " A categoria pai escolhida é descendente desta categoria"
+                );
+            }
+
             categoria.setCategoriaPai(categoriaPai);
 
         } else {
@@ -85,5 +92,14 @@ public class CategoriaService {
         categoriaRepository.save(categoria);
 
         return new CategoriaResponseDTO(categoria);
+    }
+
+    // verifica se a subcategoria é descendente da categoria raiz
+    private boolean isDescendente(Categoria raiz, UUID candidatoId) {
+        for (Categoria sub : raiz.getSubCategorias()) {
+            if (sub.getId().equals(candidatoId)) return true;
+            if (isDescendente(sub, candidatoId)) return true;
+        }
+        return false;
     }
 }
