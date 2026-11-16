@@ -6,7 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import unipampa.trueble.api.domain.Usuario;
+import unipampa.trueble.api.dto.AvatarUploadRequestDTO;
+import unipampa.trueble.api.dto.AvatarUploadResponseDTO;
+import unipampa.trueble.api.dto.AvatarUpdateRequestDTO;
 import unipampa.trueble.api.dto.RegistroUsuarioDTO;
 import unipampa.trueble.api.dto.UsuarioResponseDTO;
 import unipampa.trueble.api.services.UsuarioService;
@@ -34,5 +38,24 @@ public class UsuarioController {
     public ResponseEntity<UsuarioResponseDTO> obterPerfil(@AuthenticationPrincipal Jwt jwt) {
         UUID usuarioId = UUID.fromString(jwt.getSubject());
         return ResponseEntity.ok(usuarioService.obterPerfilAutenticado(usuarioId));
+    }
+
+    @PostMapping("/perfil/avatar/upload-url")
+    @Operation(summary = "Gerar URL de upload do avatar")
+    public ResponseEntity<AvatarUploadResponseDTO> gerarUrlUploadAvatar(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody @Valid AvatarUploadRequestDTO dto) {
+        UUID usuarioId = UUID.fromString(jwt.getSubject());
+        return ResponseEntity.ok(
+                usuarioService.criarUrlUploadAvatar(usuarioId, dto.contentType()));
+    }
+
+    @PatchMapping("/perfil/avatar")
+    @Operation(summary = "Salvar avatar do perfil")
+    public ResponseEntity<UsuarioResponseDTO> salvarAvatar(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestBody AvatarUpdateRequestDTO dto) {
+        UUID usuarioId = UUID.fromString(jwt.getSubject());
+        return ResponseEntity.ok(usuarioService.atualizarAvatar(usuarioId, dto));
     }
 }
