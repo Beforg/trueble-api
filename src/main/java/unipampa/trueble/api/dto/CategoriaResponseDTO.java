@@ -6,9 +6,10 @@ import java.util.UUID;
 
 public record CategoriaResponseDTO(
         UUID id,
-        String nome
+        String nome,
+        UUID categoriaPaiId
 ) {
     public CategoriaResponseDTO(Categoria categoria) {
-        this(categoria.getId(), categoria.getNome());
+        this(categoria.getId(), categoria.getNome(), categoria.getCategoriaPai() != null ? categoria.getCategoriaPai().getId() : null);
     }
 }

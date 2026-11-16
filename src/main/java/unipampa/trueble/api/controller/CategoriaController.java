@@ -39,7 +39,7 @@ public class CategoriaController {
     }
 
     @PutMapping
-    @Operation(summary = "Atualizar uma Categoria", description = "Atualiza o nome de uma categoria existente")
+    @Operation(summary = "Atualizar uma Categoria", description = "Atualiza os dados de uma categoria existente removendo ou alterando a categoria pai")
     @ApiResponse(responseCode = "200", description = "Categoria atualizada com sucesso")
     public ResponseEntity<CategoriaResponseDTO> atualizarCategoria(
             @RequestParam("id") String id,
